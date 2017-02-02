@@ -1,0 +1,36 @@
+<h3>S3 Bucket:  <%= @bucket.name %></h3>
+
+<% if @file_names.blank? %>
+  There are no files to display (bucket is empty).
+<% else  %>
+  <%= form_tag "#{url_for :action => 'delete', :bucket_name => @bucket.name}" do %>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Last Modified</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @file_names.contents.each do |f| %>
+          <tr>
+            <td>
+              <%= radio_button_tag(:filename_to_delete, f.key) %>
+              <%= label_tag(:filename_to_delete, f.key) %>
+            </td>
+            <td><%= f.last_modified %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-primary" data-confirm="Are you sure you want to delete this file?">Delete</button>
+  <% end %>
+
+  <%= form_tag "#{url_for :action => 'upload', :bucket_name => @bucket.name}", multipart: true do %>
+    
+    <label for="file">Upload or Replace a File</label> 
+    <%= file_field_tag "file" %>
+    <button type="submit" class="btn btn-primary">Upload</button>
+  <% end %>
+<% end %>
