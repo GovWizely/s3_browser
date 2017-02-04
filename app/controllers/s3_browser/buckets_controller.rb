@@ -5,11 +5,15 @@ module S3Browser
     before_filter :bucket, :only => [:index, :upload, :delete]
 
     def bucket
-      @bucket = Bucket.new(params[:bucket_name])
+      begin
+        @bucket = Bucket.new(params[:bucket_name])
+      rescue
+        @bad_bucket_name = params[:bucket_name]
+        render :error
+      end
     end
 
     def index
-      @file_names = @bucket.list_objects
     end
 
     def upload

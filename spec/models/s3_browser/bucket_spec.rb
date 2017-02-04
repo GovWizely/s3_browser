@@ -27,19 +27,25 @@ module S3Browser
           'content'
         end
       end
-      @bucket = Bucket.new('foo-bucket', S3Dummy.new)
+
+      class S3ResponseDummy
+        def contents
+          ['one', 'two']
+        end
+      end
     end
 
     let(:s3) { S3Dummy.new }
 
     before(:each) do 
+      expect(s3).to receive(:list_objects).with(bucket: 'foo-bucket').and_return(S3ResponseDummy.new)
       @bucket = Bucket.new('foo-bucket', s3)
     end 
 
-    describe '#list_objects' do
-      it "lists the objects" do
-        expect(s3).to receive(:list_objects).with(bucket: 'foo-bucket').and_return(['one', 'two'])
-        expect(@bucket.list_objects).to eq(['one', 'two'])
+    describe '#initialze' do
+      it "sets the bucket name and object list" do
+        expect(@bucket.name).to eq('foo-bucket')
+        expect(@bucket.files).to eq(['one', 'two'])
       end
     end
 

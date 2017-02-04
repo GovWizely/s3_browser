@@ -4,14 +4,32 @@ module S3Browser
   RSpec.describe BucketsController, type: :controller do
     routes { S3Browser::Engine.routes }
 
+    before(:all) do 
+      class BucketDummy
+        attr_accessor :name, :files
+
+        def initialize(bucket_name)
+          @name = bucket_name
+          @files = ['one', 'two']
+        end
+        
+        def upload(file)
+          'file_uploaded'
+        end
+
+        def delete(filename)
+          'file_deleted'
+        end
+      end
+    end
+
+    let(:bucket_name) { 'foo-bucket'}
+
+    before(:each) { allow(Bucket).to receive(:new).and_return(BucketDummy.new(bucket_name)) }
+
     describe "GET index" do
       before  do
-        allow_any_instance_of(Bucket).to receive(:list_objects).and_return(['one', 'two'])
-        get :index, bucket_name: 'foo-bucket'
-      end
-
-      it "assigns @file_names" do
-        expect(assigns(:file_names)).to eq(['one', 'two'])
+        get :index, bucket_name: bucket_name
       end
 
       it "renders the index template" do
@@ -21,8 +39,7 @@ module S3Browser
 
     describe "GET upload" do
       before  do
-        allow_any_instance_of(Bucket).to receive(:upload).and_return('file uploaded')
-        get :upload, bucket_name: 'foo-bucket', file: 'pretend this is a file'
+        get :upload, bucket_name: bucket_name, file: 'pretend this is a file'
       end
 
       it "redirects to the index template" do
@@ -30,14 +47,24 @@ module S3Browser
       end
     end
 
-    describe "GET index" do
+    describe "GET delete" do
       before  do
-        allow_any_instance_of(Bucket).to receive(:delete).and_return('file deleted')
-        get :delete, bucket_name: 'foo-bucket', filename_to_delete: 'foo_file'
+        get :delete, bucket_name: bucket_name, filename_to_delete: 'foo_file'
       end
 
       it "redirects to the index template" do
         expect(response).to redirect_to(:action => "index", :bucket_name => 'foo-bucket')
+      end
+    end
+
+    describe '#bucket' do 
+      before  do
+        allow(Bucket).to receive(:new).and_raise(StandardError)
+        get :index, bucket_name: bucket_name
+      end
+      it "renders an error message when there is trouble connecting to the bucket" do
+        expect(response).to render_template(:error)
+        expect(assigns(:bad_bucket_name)).to eq('foo-bucket')
       end
     end
   end
