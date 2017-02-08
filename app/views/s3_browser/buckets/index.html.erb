@@ -3,7 +3,7 @@
 <% if @bucket.files.blank? %>
   There are no files to display (bucket is empty).
 <% else  %>
-  <%= form_tag "#{url_for :action => 'delete', :bucket_name => @bucket.name}" do %>
+  <%= form_tag buckets_delete_path do %>
     <table>
       <thead>
         <tr>
@@ -30,7 +30,7 @@
   <% end %>
 <% end %>
 
-<%= form_tag "#{url_for :action => 'upload', :bucket_name => @bucket.name}", multipart: true do %>
+<%= form_tag buckets_upload_path, multipart: true do %>
   <div class="field">
     <label for="file">Upload a new file or replace an existing one. </label> 
     <%= file_field_tag "file" %>
