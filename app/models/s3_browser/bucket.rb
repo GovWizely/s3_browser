@@ -10,8 +10,10 @@ module S3Browser
       @files = @s3.list_objects(bucket: "#{@name}").contents
     end
     
-    def upload(file)
-      @s3.put_object(bucket: "#{@name}", key: "#{file.original_filename}", body: file.read)
+    def upload(files)
+      files.each do |file|
+        @s3.put_object(bucket: "#{@name}", key: "#{file.original_filename.gsub(':', '/')}", body: file.read)
+      end
     end
 
     def delete(filename)

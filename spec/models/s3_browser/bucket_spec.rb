@@ -8,21 +8,20 @@ module S3Browser
         def list_objects(params)
           ['one', 'two']
         end
-
         def put_object(params)
-          'put response'
         end
-
         def delete_object(params)
           'delete response'
         end
       end
 
       class FileDummy
-        def original_filename
-          'key'
+        def initialize(name)
+          @name = name
         end
-
+        def original_filename
+          @name
+        end
         def read
           'content'
         end
@@ -50,9 +49,11 @@ module S3Browser
     end
 
     describe '#upload' do
-      it "uploads the object to s3" do
-        expect(s3).to receive(:put_object).with(bucket: 'foo-bucket', key: 'key', body: 'content').and_return('put response')
-        expect(@bucket.upload(FileDummy.new)).to eq('put response')
+      it "uploads the objects to s3" do
+        expect(s3).to receive(:put_object).with(bucket: 'foo-bucket', key: 'f1/file.txt', body: 'content')
+        expect(s3).to receive(:put_object).with(bucket: 'foo-bucket', key: 'f2/file.txt', body: 'content')
+        files = [FileDummy.new('f1/file.txt'), FileDummy.new('f2/file.txt')]
+        expect(@bucket.upload(files)).to be_truthy
       end
     end
 

@@ -13,7 +13,7 @@ module S3Browser
           @files = ['one', 'two']
         end
         
-        def upload(file)
+        def upload(files)
           'file_uploaded'
         end
 
@@ -39,7 +39,7 @@ module S3Browser
 
     describe "GET upload" do
       before  do
-        get :upload, bucket_name: bucket_name, file: 'pretend this is a file'
+        get :upload, bucket_name: bucket_name, files: ['array', 'of', 'files']
       end
 
       it "redirects to the index template" do

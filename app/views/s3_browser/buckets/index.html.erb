@@ -33,7 +33,7 @@
 <%= form_tag buckets_upload_path, multipart: true do %>
   <div class="field">
     <label for="file">Upload a new file or replace an existing one. </label> 
-    <%= file_field_tag "file" %>
+    <%= file_field_tag "files[]", multiple: true %>
   </div>
 
   <%= submit_tag "Upload" %>

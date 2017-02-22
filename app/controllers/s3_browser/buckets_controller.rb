@@ -17,12 +17,12 @@ module S3Browser
     end
 
     def upload
-      response = @bucket.upload(params[:file])
+      @bucket.upload(params[:files])
       redirect_to buckets_path
     end
 
     def delete
-      response = @bucket.delete(params[:filename_to_delete])
+      @bucket.delete(params[:filename_to_delete])
       redirect_to buckets_path
     end
   end
