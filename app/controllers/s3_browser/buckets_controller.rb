@@ -7,7 +7,8 @@ module S3Browser
     def bucket
       begin
         @bucket = Bucket.new(params[:bucket_name])
-      rescue
+      rescue => e
+        Rails.logger.error e
         @bad_bucket_name = params[:bucket_name]
         render :error
       end
