@@ -4,17 +4,6 @@ module S3Browser
   RSpec.describe Bucket, type: :model do
   
     before(:all) do 
-      class S3Dummy
-        def list_objects(params)
-          ['one', 'two']
-        end
-        def put_object(params)
-        end
-        def delete_object(params)
-          'delete response'
-        end
-      end
-
       class FileDummy
         def initialize(name)
           @name = name
@@ -32,12 +21,22 @@ module S3Browser
           ['one', 'two']
         end
       end
+
+      class S3Dummy
+        def list_objects(params)
+          S3ResponseDummy.new
+        end
+        def put_object(params)
+        end
+        def delete_object(params)
+          'delete response'
+        end
+      end
     end
 
     let(:s3) { S3Dummy.new }
 
     before(:each) do 
-      expect(s3).to receive(:list_objects).with(bucket: 'foo-bucket').and_return(S3ResponseDummy.new)
       @bucket = Bucket.new('foo-bucket', s3)
     end 
 
@@ -50,9 +49,9 @@ module S3Browser
 
     describe '#upload' do
       it "uploads the objects to s3" do
-        expect(s3).to receive(:put_object).with(bucket: 'foo-bucket', key: 'f1/file.txt', body: 'content')
-        expect(s3).to receive(:put_object).with(bucket: 'foo-bucket', key: 'f2/file.txt', body: 'content')
-        files = [FileDummy.new('f1/file.txt'), FileDummy.new('f2/file.txt')]
+        expect(s3).to receive(:put_object).with(bucket: 'foo-bucket', key: 'f1_file.txt', body: 'content')
+        expect(s3).to receive(:put_object).with(bucket: 'foo-bucket', key: 'f2_file.txt', body: 'content')
+        files = [FileDummy.new('f1_file.txt'), FileDummy.new('f2_file.txt')]
         expect(@bucket.upload(files)).to be_truthy
       end
     end

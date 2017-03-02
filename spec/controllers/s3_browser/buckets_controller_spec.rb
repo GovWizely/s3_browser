@@ -38,22 +38,36 @@ module S3Browser
     end
 
     describe "GET upload" do
-      before  do
-        get :upload, bucket_name: bucket_name, files: ['array', 'of', 'files']
+      context 'when one or more files are selected' do
+        before { get :upload, bucket_name: bucket_name, files: ['array', 'of', 'files'] }
+        it "redirects to the index template" do
+          expect(response).to redirect_to(:action => "index", :bucket_name => 'foo-bucket')
+        end
       end
 
-      it "redirects to the index template" do
-        expect(response).to redirect_to(:action => "index", :bucket_name => 'foo-bucket')
+      context 'when no file is selected' do
+        before { get :upload, bucket_name: bucket_name, files: nil }
+        it "rerenders the form with an error message" do
+          expect(response).to render_template(:index)
+          expect(assigns(:error_message)).to eq('Must select at least one file to upload.')
+        end
       end
     end
 
     describe "GET delete" do
-      before  do
-        get :delete, bucket_name: bucket_name, filename_to_delete: 'foo_file'
+      context 'when a file is selected for deletion' do 
+        before { get :delete, bucket_name: bucket_name, filename_to_delete: 'foo_file' }
+        it "redirects to the index template" do
+          expect(response).to redirect_to(:action => "index", :bucket_name => 'foo-bucket')
+        end
       end
 
-      it "redirects to the index template" do
-        expect(response).to redirect_to(:action => "index", :bucket_name => 'foo-bucket')
+      context 'when no file is selected' do
+        before { get :delete, bucket_name: bucket_name, filename_to_delete: nil }
+        it "rerenders the form with an error message" do
+          expect(response).to render_template(:index)
+          expect(assigns(:error_message)).to eq('Must select a file to delete.')
+        end
       end
     end
 

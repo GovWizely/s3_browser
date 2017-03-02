@@ -13,7 +13,7 @@ module S3Browser
     
     def upload(files)
       files.each do |file|
-        @s3.put_object(bucket: "#{@name}", key: "#{file.original_filename.gsub(':', '/')}", body: file.read)
+        @s3.put_object(bucket: "#{@name}", key: "#{file.original_filename}", body: file.read)
       end
     end
 

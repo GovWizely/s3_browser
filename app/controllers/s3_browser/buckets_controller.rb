@@ -15,16 +15,27 @@ module S3Browser
     end
 
     def index
+      @error_message = ''
     end
 
     def upload
-      @bucket.upload(params[:files])
-      redirect_to buckets_path
+      if params[:files].present?
+        @bucket.upload(params[:files])
+        redirect_to buckets_path
+      else
+        @error_message = 'Must select at least one file to upload.'
+        render :index
+      end
     end
 
     def delete
-      @bucket.delete(params[:filename_to_delete])
-      redirect_to buckets_path
+      if params[:filename_to_delete].present?
+        @bucket.delete(params[:filename_to_delete])
+        redirect_to buckets_path
+      else
+        @error_message = 'Must select a file to delete.'
+        render :index
+      end
     end
   end
 end

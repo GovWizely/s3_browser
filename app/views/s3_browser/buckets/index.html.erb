@@ -1,9 +1,27 @@
+<% if @error_message.present? %>
+  <div class="alert alert-danger"> <%= @error_message %></div>
+<% end %>
+
 <h3>S3 Bucket:  <%= @bucket.name %></h3>
+
+<%= form_tag buckets_upload_path, multipart: true do %>
+  <div class="field">
+    <label for="file">Click "Browse" to select one or multiple files, then "Upload".  Files with the same name will be overwritten. Dashes (-) in file names will be replaced by slashes (/) since slashes are not allowed in file names on some systems.</label> 
+    <%= file_field_tag "files[]", multiple: true %>
+  </div>
+
+  <%= submit_tag "Upload", data: { confirm: "Are you sure you want to upload this file or files?" }  %>
+<% end %>
+
+<br>
 
 <% if @bucket.files.blank? %>
   There are no files to display (bucket is empty).
 <% else  %>
   <%= form_tag buckets_delete_path do %>
+    <label> Select a file below and click "Delete" to remove it. </label> 
+    <br>
+    <%= submit_tag "Delete", data: { confirm: "Are you sure you want to delete this file?" } %>
     <table>
       <thead>
         <tr>
@@ -24,17 +42,6 @@
           </tr>
         <% end %>
       </tbody>
-    </table>
-
-    <%= submit_tag "Delete", data: { confirm: "Are you sure?" } %>
+    </table> 
   <% end %>
-<% end %>
-
-<%= form_tag buckets_upload_path, multipart: true do %>
-  <div class="field">
-    <label for="file">Upload a new file or replace an existing one. </label> 
-    <%= file_field_tag "files[]", multiple: true %>
-  </div>
-
-  <%= submit_tag "Upload" %>
 <% end %>

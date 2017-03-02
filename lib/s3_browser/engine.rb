@@ -7,7 +7,7 @@ module S3Browser
       self.aws_credentials = {
         access_key_id:     'not a key',
         secret_access_key: 'also not a key',
-        region:             'us-east-1'
+        region:            'us-east-1'
       }
     end
 
