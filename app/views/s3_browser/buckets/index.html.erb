@@ -6,7 +6,7 @@
 
 <%= form_tag buckets_upload_path, multipart: true do %>
   <div class="field">
-    <label for="file">Click "Browse" to select one or multiple files, then "Upload".  Files with the same name will be overwritten. Dashes (-) in file names will be replaced by slashes (/) since slashes are not allowed in file names on some systems.</label> 
+    <label for="file">Click "Browse" to select one or multiple files, then "Upload".  Files with the same name will be overwritten. </label> 
     <%= file_field_tag "files[]", multiple: true %>
   </div>
 
