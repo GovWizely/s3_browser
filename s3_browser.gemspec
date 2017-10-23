@@ -17,9 +17,10 @@ Gem::Specification.new do |s|
   s.files = Dir["{app,config,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
   s.test_files = Dir["spec/**/*"]
 
-  s.add_dependency "rails", "= 4.0.9"
+  s.add_dependency "rails", ">= 5.1"
   s.add_dependency "aws-sdk-core"
   s.add_dependency "jquery-rails" 
   s.add_development_dependency "rspec-rails"
+  s.add_development_dependency 'rails-controller-testing'
   s.add_dependency "codeclimate-test-reporter"
 end

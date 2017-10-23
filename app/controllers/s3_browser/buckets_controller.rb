@@ -2,7 +2,7 @@ require_dependency "s3_browser/application_controller"
 
 module S3Browser
   class BucketsController < ApplicationController
-    before_filter :bucket, :only => [:index, :upload, :delete]
+    before_action :bucket, :only => [:index, :upload, :delete]
 
     def bucket
       begin
